@@ -1,0 +1,2 @@
+# Identification-of-Raphael-Paintings
+The following data, provided by Prof. Yang WANG from HKUST, https://drive.google.com/folderview?id=0B-yDtwSjhaSCZ2FqN3AxQ3NJNTA&amp;usp=sharing contains a 28 digital paintings of Raphael or forgeries. Note that there are both jpeg and tiff files, so be careful with the bit depth in digitization. The following file https://docs.google.com/document/d/1tMaaSIrYwNFZZ2cEJdx1DfFscIfERd5Dp2U7K1ekjTI/ edit contains the labels of such paintings.
