@@ -23,4 +23,7 @@ This is the first classification I use and is mentioned in  http://dx.doi.org/10
 best based on experiment) features and classify them according to their square distance from 0 (since we normalize the data). And choose 
 the best threshold p according to the accuarcy on the training set to classify the disputed paintings.
 This method reaches an accuracy of 80% on the leave-one-out cross validation test.
-According this method, 
+
+‘tight_frame_neural_net’:
+This is the second classification method I use, a neraul netword with a hidden layer of 7 units.
+It reaches an accuracy of about 92.5% on leave-one-out cross validation test.
