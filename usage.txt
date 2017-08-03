@@ -1,19 +1,26 @@
 'processing_data.py':
-(1)load the painting into 3 sets, T(11 Raphael's paintings), N(9 non-Raphael's, the 28.N could not be load in so I abandoned it) and D(6 disputed).
+(1)load the painting into 3 sets, T(11 Raphael's paintings), N(9 non-Raphael's, the 28.N could not be load in so I abandoned it) and D(6 
+disputed).
 (2)transform the RGB paintings to gray-scale form: (299*R+587*G+114*B)//1000
-(3)truncate the edges of the paintings and finally store the gray-scale and edged-truncated paintings as truncated_edge_T.p, truncated_edge_D.p and truncated_edge_N.p, which is to large to be uploaded.
+(3)truncate the edges of the paintings and finally store the gray-scale and edged-truncated paintings as truncated_edge_T.p, 
+truncated_edge_D.p and truncated_edge_N.p, which is to large to be uploaded.
 
 'tight_frame_feature.py' :
-(1)first, operate 18 filters of tao.p to each paintings to get 18 feature-figures, then calculate 3 statistics of each feature-figures, which are:
+(1)first, operate 18 filters of tao.p to each paintings to get 18 feature-figures, then calculate 3 statistics of each feature-figures, 
+which are:
      a) the mean
      b) the standard variance(std)
      c) the proportion of pixels that are more than one std away from the mean
 (2) store the 18*3 =54 feautres of each paintings into tight_Frame_T.p, tight_frame_D.p and tight_frame_N.p
 
 'tight_frame_feature_selection.py':
-select given number 'ft_num' of features such that raphael's paintings concentrate in the center while non-raphael's paintings lay as outliers. Technology used here is calculate the area under the ROC curve(AUC), which is mention in http://dx.doi.org/10.1016/j.acha.2015.11.005.
+select given number 'ft_num' of features such that raphael's paintings concentrate in the center while non-raphael's paintings lay as 
+outliers. Technology used here is calculate the area under the ROC curve(AUC), which is mention in 
+http://dx.doi.org/10.1016/j.acha.2015.11.005.
 
 'tight_frame_center_distance':
-This is the first classification I use and is mentioned in  http://dx.doi.org/10.1016/j.acha.2015.11.005, too. We select 3(which is the best based on experiment) features and classify them according to their square distance from 0 (since we normalize the data). And choose the best threshold p according to the accuarcy on the training set to classify the disputed paintings.
+This is the first classification I use and is mentioned in  http://dx.doi.org/10.1016/j.acha.2015.11.005, too. We select 3(which is the 
+best based on experiment) features and classify them according to their square distance from 0 (since we normalize the data). And choose 
+the best threshold p according to the accuarcy on the training set to classify the disputed paintings.
 This method reaches an accuracy of 80% on the leave-one-out cross validation test.
 According this method, 
