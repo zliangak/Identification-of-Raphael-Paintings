@@ -19,6 +19,7 @@ outliers. Technology used here is calculate the area under the ROC curve(AUC), w
 http://dx.doi.org/10.1016/j.acha.2015.11.005.
 
 'tight_frame_center_distance':
+We name this method as Distance Discriminant Analysis.
 This is the first classification I use and is mentioned in  http://dx.doi.org/10.1016/j.acha.2015.11.005, too. We select 3(which is the 
 best based on experiment) features and classify them according to their square distance from 0 (since we normalize the data). And choose 
 the best threshold p according to the accuarcy on the training set to classify the disputed paintings.
@@ -27,3 +28,7 @@ This method reaches an accuracy of 80% on the leave-one-out cross validation tes
 ‘tight_frame_neural_net’:
 This is the second classification method I use, a neraul netword with a hidden layer of 7 units.
 It reaches an accuracy of about 92.5% on leave-one-out cross validation test.
+
+'distance_neural_net.py':
+This the third classification method I use, combining the first and second method and reach an accuracy about 96.5%.
+More detailed description could be found in my report.
