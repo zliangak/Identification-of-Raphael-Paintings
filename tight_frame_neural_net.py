@@ -18,7 +18,6 @@ def load():
     T = pickle.load(open('data/tight_frame_T.p','rb'))
     N = pickle.load(open('data/tight_frame_N.p','rb'))
 
-
     ''' normalize the training data'''
     nol_D = normalize(D)
     nol_T = normalize(T)
@@ -42,11 +41,11 @@ def load():
 
 
 def fit(train_x,train_y):
-    '''constructing neural network'''
+    '''constructing neural network and fit with the given data'''
     model = Sequential()
-    model.add(Dense(7,input_dim=x.shape[1],kernel_regularizer=regularizers.l2(0.001)))
+    model.add(Dense(7,input_dim=train_x.shape[1],kernel_regularizer=regularizers.l2(0.001)))
     model.add(Activation('tanh'))
-    model.add(Dense(1,input_dim=6))
+    model.add(Dense(1,input_dim=7))
     model.add(Activation('sigmoid'))
     model.compile(loss='binary_crossentropy',optimizer='sgd')
     model.fit(train_x,train_y,epochs=50,batch_size=1,verbose=False)
@@ -54,7 +53,8 @@ def fit(train_x,train_y):
 
 
 def threshold(pred,t):
-    '''to control the threshold of the classificaiton'''
+    '''to control the threshold of the classificaiton,
+    instead of the default 0.5'''
     for i in range(len(pred)):
         if pred[i]<t:
             pred[i]=1
@@ -66,6 +66,7 @@ def threshold(pred,t):
 def validate(t,num_iter):
     '''leave-one-out cross_validation'''
     cv_acc = []
+    # store the TPR and TNR of 20 tests
     TPR = []
     TNR = []
     F_score = []      
@@ -79,13 +80,15 @@ def validate(t,num_iter):
         for i in range(x.shape[0]):
             print('The',i,'th sample out of',x.shape[0],'iter=',k)
             # rule out the sample that we want to test this time
-            index =[j for j in range(x.shape[0]) if j!=i] 
+            index =[j for j in range(x.shape[0]) if j!=i]
             train_x = x[index,:]
             train_y = y[index]
             # fit the remaining data and return the model as mdl
             mdl = fit(train_x,train_y)
+            # predict the probability of the i sample
             prob = mdl.predict(x[i,:].reshape(1,x.shape[1]))
             pred = threshold(prob,t)
+            # just to compare the prediction and real label
             print('pred=',pred)
             print('y=',y[i])
             if (pred[0][0]==1 and y[i]==1):
@@ -97,6 +100,7 @@ def validate(t,num_iter):
             if (pred[0][0]==0 and y[i]==0):
                 TN += 1
             del mdl
+        # store the evaluation of this test
         cv_acc += [(TP+TN)/y.shape[0]]
         TPR += [TP/(TP+FN)]
         TNR += [TN/(TN+FP)]
@@ -105,10 +109,12 @@ def validate(t,num_iter):
 
 def dpt_pred(t,num_iter):
     '''predict the disputed paintings
-    return the probability of a painting being genuine'''
+    return the probability of a painting being genuine
+    'num_iter' is the number of repeated experiments'''
     tol = [0 for i in range(nol_D.shape[0])]
     for i in range(num_iter):
         print('The',i,'time out of',num_iter)
+        # fit the model with all 20 known samples
         mdl = fit(x,y)
         disputed_prob = mdl.predict(nol_D)
         disputed_pred = threshold(disputed_prob,t)
@@ -125,12 +131,12 @@ if __name__ == '__main__':
     nol_D,x,y = load()
 
 
-    '''training on n-2 paintings and calculate the accuracy
-        of the laeve-one-out cross validation and the accuracy
-        of predicting the last test painting.
+    '''training on n-1 paintings and calculate the accuracy
+        of the laeve-one-out cross validation.
         since neural network is not stable, we repeat the process
         by num_iter times and calculate the average accuracy
     '''
+    # t is the classification threshold
     t = 0.5
     num_iter = 1
     cv_acc,TPR,TNR,F_score = validate(t,num_iter)
