@@ -11,24 +11,27 @@ import numpy as np
 import pickle
 
 def normalize(A):
+    '''normalize a whole matrix by column'''
     A = np.array(A)
     A = A - A.mean(axis=0)
     A = A / A.std(axis=0)
     return A
 
 def ft_img(image):
-    '''calculting the 18 feature figures of every painting'''
+    '''calculting the 18 feature-images of every painting'''
     n,m = image.shape
+    # use ft_img to store the feature-images
     ft_img = []
-    # the size of the neighbour
+    #t is the size of the neighbour
     t = 2
     for k in range(18):
         fil = np.zeros((n-2*t,m-2*t))
         for i in range(t,n-t):
             for j in range(t,m-t):
                 fil[i-t,j-t] = sum(sum(tao[k]*image[i-t:i+t+1:t,j-t:j+t+1:t]))
-            # just to show the process of row
+            # just to show the process
             if i%20==0:print(i,'row for',k,'ft_img')
+        # store the feature-image in ft_img
         ft_img += [fil]
         del fil
     return ft_img
@@ -54,7 +57,8 @@ def stat_3(image):
     return count/(m*n)
 
 def feature_set(S):
-    '''extracting 54 feature for every painting set: N,T,D'''
+    '''extracting 54 feature for every painting in a whole set,
+    S = N,T,D'''
     for k in len(S):
         image = S[k]
         ft = ft_img(image)
@@ -64,6 +68,7 @@ def feature_set(S):
             st_2 = stat_2(ft[loop])
             st_3 = stat_3(ft[loop])
             single_S += [st_1,st_2,st_3]
+        # save the 54 features
         pickle.dump(single_T,open('data/S_'+str(k)+'.p','wb'))
 
 
