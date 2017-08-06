@@ -11,7 +11,8 @@ from processing_data import *
 import matplotlib.pyplot as plt
 
 def dist(F,g):
-    '''return the distance from the center 0 of g, given F'''
+    '''return the distance from the center 0 of g,
+    given feature selection F (a list)'''
     g = g[1:]
     g = g[F]
     dst = sum([i**2 for i in g])
@@ -22,9 +23,12 @@ def ROC(F):
     '''Given list F (index of feature that we choose)
     return the TPR and FPR of different threshold p'''
     dst = []
-    step = 500
+    # list TPR and FPR are used to 
+    # store the TPR and FPR of different threshold p
     TPR = []
     FPR = []
+    step = 500
+    # G is define in main function
     T = sum(G[:,0])
     N = G.shape[0] - T
     
@@ -51,6 +55,7 @@ def AUC(F):
     TPR,FPR = ROC(F)
     area = 0
     for i in range(1,len(FPR)):
+        # calculating the area by integral
         area += (FPR[i]-FPR[i-1])*TPR[i]
     return area
     
@@ -60,13 +65,17 @@ def ft_selection(ft_num):
     ft_slt = []
     for k in range(ft_num):
         print('seletcting',k,'-th feature')
+        # list area is used to record the AUC of
+        # different feature selection choice F
         area = []
         for j in range(54):
             if (j not in ft_slt):
+                # forward step-wise procedure
                 F = ft_slt + [j]
                 area += [AUC(F)]
             else:
                 area += [-1]
+        # find out the feature with largest AUC
         idx = area.index(max(area))
         ft_slt += [idx]
     return ft_slt
@@ -83,6 +92,7 @@ nol_T = normalize(T)
 '''adding label to the first row'''
 lab_T = np.column_stack(([1 for i in range(nol_T.shape[0])],nol_T))
 lab_N = np.column_stack(([0 for i in range(nol_N.shape[0])],nol_N))
+# G is the training data, with 20 known sample
 G = np.row_stack((lab_T,lab_N))
 
 del N,T,lab_T,lab_N,nol_N,nol_T
