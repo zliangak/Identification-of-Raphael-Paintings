@@ -12,6 +12,7 @@ from PIL import Image
 import pickle
 
 def normalize(A):
+    '''normalize the features'''
     A = np.array(A)
     A = A - A.mean(axis=0)
     A = A / A.std(axis=0)
@@ -34,8 +35,8 @@ def show_gray(image):
   
 
 def truncate(image_1):
-    '''trancating eages'''
-    '''num of pixel cutting from each eage'''
+    '''cutting the eages'''
+    '''n  is  the num of pixel cutting from each eage'''
     n = 100
     i,j = image_1.shape
     image_2 = image_1[n:i-n,n:j-n]
@@ -46,7 +47,7 @@ def truncate(image_1):
 
 
 if __name__=='__main__':
-    '''laooding data manually
+    '''laooding data manually,since they are of differnet forms(tif,tiff,jpg)
      D means the disputed data
      N means non-raphael data
      T mean Raphael's data
@@ -100,10 +101,12 @@ if __name__=='__main__':
     ''' transforming painting into grayscale'''
     raphael_D_2 = []
     for i in raphael_D:
-        raphael_D_2 += [tran_gray(i)]    
+        raphael_D_2 += [tran_gray(i)]  
+        
     raphael_N_2 = []
     for j in raphael_N:
         raphael_N_2 += [tran_gray(j)]
+        
     raphael_T_2 = []
     for k in raphael_T:
         raphael_T_2 += [tran_gray(k)]
