@@ -12,12 +12,19 @@ from mpl_toolkits.mplot3d import Axes3D
 from tight_frame_neural_net import *
 
 def neural(k,dspt=False):
-    '''t is the threshold when of re-classified a painting in Neural network'''
+    '''t is the threshold when we re-classified a painting in Neural network,
+    k is the index of sample that we want to re-classified,
+    dspt=False means we are re-classified for known samples and True means we are
+    re-classified for disputed samples
+    and return the predict result 1/0'''
+
     t = 0.7
     if dspt == False:
+        # rule out the sample we want to re-classified
         index = [j for j in range(len(y)) if j!=k]
         x_train = neural_x[index,:]
         y_train = neural_y[index]
+        # fit the model with the remaining known samples
         model = fit(x_train,y_train)
         prob = model.predict(neural_x[k,:].reshape(1,neural_x.shape[1]))
         print(k,':',1 - prob)
@@ -39,6 +46,8 @@ def distance(x):
     return dst
 
 def thsd(train_x,train_y):
+    # select the best threshold p for a
+    # given data set train_x and its label
     acc = []
     dst = distance(train_x)
     for i in range(len(dst)):
@@ -65,7 +74,7 @@ def validate():
         if (dst>p):
             '''if a painting is predict as non-raphael by disatance dsicrimiant
             analysis, we would predict it again in neural network
-            If it has a probability large than 80%, than we predict it as genuine'''
+            If it has a probability larger than 70%, than we predict it as genuine'''
             pred = neural(k)
             if pred==1:
                 dst=0         
@@ -75,6 +84,7 @@ def validate():
         elif (dst>p and y[k]==0):
             count+=1
             print(k,'times : count=',count)
+    # cv_acc the accuracy of the cross validation test
     cv_acc= count/len(y)
     print('cv_acc=',cv_acc)
     return cv_acc
@@ -88,8 +98,7 @@ def dpt_predict():
     for k in range(test_D.shape[0]):
         dst = sum([t**2 for t in test_D[k,:]]) 
         if dst>p:
-            '''use the dspt mode, which means that our neural network will
-            train on all the 20 known samples instead of some 19 of them'''
+            '''if it's predicted as outlier, re-classify it with Neural Network'''
             re_pred = neural(k,dspt=True)
             if re_pred==1:
                 dst=0 
@@ -139,8 +148,10 @@ def plot(ft_num=3):
 if __name__ == '__main__':    
     #ft_slt = [6,33,2,12,39]
     ft_num = 3
-    ft_slt = ft_selection(ft_num)  
-    x = G[:,1:]  # G comes from the file: tight_frame_feature_selection
+    ft_slt = ft_selection(ft_num)
+    # G comes from the file: tight_frame_feature_selection
+    # it contains all 20 known samples with their labels in first column
+    x = G[:,1:] 
     x = x[:,ft_slt]
     y = G[:,0]
     neural_x = G[:,1:]
@@ -148,10 +159,10 @@ if __name__ == '__main__':
     D = pickle.load(open('data/tight_frame_D.p','rb'))
     nol_D = normalize(D)
     plot(ft_num)
-    '''repeat the process 10 time and calculate the average'''
+    '''repeat the process 30 time and calculate the average'''
     cr_acc = []
     predict = np.zeros(len(D))
-    num_iter = 20
+    num_iter = 30
     for i in range(num_iter):
         print('----------------the',i,'time---------------')
         cr_acc += [validate()]
