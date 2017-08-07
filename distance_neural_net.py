@@ -6,10 +6,10 @@ Created on Fri Aug  4 19:15:29 2017
 """
 
 import numpy as np
-from tight_frame_feature_selection import *
+from feature_selection import *
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from tight_frame_neural_net import *
+from neural_net import *
 
 def neural(k,dspt=False):
     '''t is the threshold when we re-classified a painting in Neural network,
